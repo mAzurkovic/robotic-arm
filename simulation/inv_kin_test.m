@@ -6,7 +6,7 @@ clear all;
 % Inputs %
 %%%%%%%%%%
 
-p = [ 0.11496 0.1 0.09877 ]; % x0, y0, z0 desired positions
+p = [ 0.11496 0.0 0.09877 ]; % x0, y0, z0 desired positions
 phi = 0; % Desired end-effector joinmt angle follower
 
 % Constants
@@ -35,5 +35,7 @@ theta_3 = 180 + phi_3;
 theta_4 = 360 + (phi - (theta_2 + theta_3));
 
 joint_space = [ theta_1 ; theta_2 ; theta_3 ; theta_4 ];
+
+disp(phi_3);
 
 disp(joint_space);
