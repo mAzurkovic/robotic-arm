@@ -29,16 +29,23 @@ int angleToSteps(float angle) {
 }
 
 
-void moveJoints(int angleJ1, int angleJ2) {
-  J1.move( angleToSteps(angleJ1) );
-  J2.move( angleToSteps(angleJ2) );  
+void moveJoints(AccelStepper joint1, AccelStepper joint2, float * jointAngles, int acceleration) {  
+  int stepsJ1 = angleToSteps(jointAngles[1]);
+  int stepsJ2 = angleToSteps(jointAngles[2]);
+
+  joint1.setAcceleration(acceleration);
+  joint2.setAcceleration(acceleration);
+
+  
+  joint1.move(stepsJ1);
+  joint2.move(stepsJ2);  
 
    while ( 
-    (J1.distanceToGo() != 0) || 
-    (J2.distanceToGo() != 0) 
+    (joint1.distanceToGo() != 0) || 
+    (joint2.distanceToGo() != 0) 
     ) {
-      J1.run();
-      J2.run();
+      joint1.run();
+      joint2.run();
   }
 } 
 
@@ -50,7 +57,7 @@ void dMotorsRun(float* jointAngles, int velociy, int acceleration) {
   if (acceleration != 0) {
     // Configure current kinematics parameters
     J1.setAcceleration(acceleration);
-    J1.setSpeed(velociy);
+    J2.setSpeed(velociy);
     
     J2.setAcceleration(acceleration);
     J2.setSpeed(velociy);
@@ -157,7 +164,7 @@ void setup() {
   //  Setting speed and acceleration parameters for each joint
   //----------------------------------------------------------------
   J1.setMaxSpeed(800.0);
- // J1.setAcceleration(400.0);
+  J1.setAcceleration(400.0);
 
   J2.setMaxSpeed(800.0);
   J2.setAcceleration(400.0);
@@ -173,20 +180,19 @@ void loop() {
   
   float pos[] = {0.11496, 0.0, 0.09877};
   inverseKinematics(0, pos, jointAngles);
+  moveJoints(J1, J2, jointAngles, 100);
+
 
   // Microstep calibration at start of loop
  // dMotorsRun(zeroAngles, 800, 40);
 
-  run3(800, 0, 800, 20);   // Start
-    Serial.println(J1.speed());
+//  run3(800, 0, 800, 20);   // Start
 
-  run3(800, J1.speed(), 800, 20);
-    Serial.println(J1.speed());
+ // run3(800, J1.speed(), 800, 20);
 
-  run3(800, J1.speed(), 800, 20);
-    Serial.println(J1.speed());
+//  run3(800, J1.speed(), 800, 20);
 
-  run3(800, J1.speed(), 0, 20);
+ // run3(800, J1.speed(), 0, 20);
 
 
   
@@ -195,19 +201,10 @@ void loop() {
  // dMotorsRun(angles, 800, 0);
 
 
-  /*float pos[] = {0.11496, 0.0, 0.09877};
-  inverseKinematics(0, pos, jointAngles);
-  moveJoints(jointAngles[1], jointAngles[2]);*/
 
 
 
   delay(1000);
-
-  /*delay(500);
-  moveJoints(-180, 360);
-  delay(500);
-  moveJoints(180, -360);
-  delay(25); */
 
 
 }
