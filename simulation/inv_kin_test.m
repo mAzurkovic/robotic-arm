@@ -6,15 +6,15 @@ clear all;
 % Inputs %
 %%%%%%%%%%
 
-p = [ 0.11496 0.0 0.09877 ]; % x0, y0, z0 desired positions
+p = [ 0.110 0.0 0.254 ]; % x0, y0, z0 desired positions
 phi = 0; % Desired end-effector joinmt angle follower
 
 % Constants
-L0      = 0.01;   
-L1      = 0.045;
-L2      = 0.15;
-L3      = 0.15;
-L4      = 0.03;
+L0      = 0.095;   
+L1      = 0.006;
+L2      = 0.181;
+L3      = 0.174;
+L4      = 0.054;
 
 p_prime = [ (p(1) - L4 * cosd(phi)) p(2) (p(3) - L4 * sind(phi))];
 

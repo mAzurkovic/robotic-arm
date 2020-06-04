@@ -99,9 +99,7 @@ void loop()
 {
   digitalWrite(4,HIGH);
 
-  runMotor(4, 5, 1, angleToSteps(360), 4000, 10);
-  runMotor(4, 5, 0, angleToSteps(360), 4000, 10);
-  runMotor(4, 5, 1, angleToSteps(95), 4000, 10);
+  runMotor(4, 5, 1, angleToSteps(360*20), 4000, 10);
 
 
   //runMotorv2();

@@ -5,6 +5,7 @@
 #define MICRO_STEPS 0.25
 #define MAX_SPS 800
 
+#define LARGE_RATIO 28.44
 
 #define INTERFACE_TYPE 1
 
@@ -24,14 +25,15 @@ float jointAngles[4];
 AccelStepper J1 = AccelStepper(INTERFACE_TYPE, J1_STEP, J1_DIR);
 AccelStepper J2 = AccelStepper(INTERFACE_TYPE, J2_STEP, J2_DIR);
 
+
 int angleToSteps(float angle) {
   return (int) (angle / degreesPerStep);
 }
 
 
 void moveJoints(AccelStepper joint1, AccelStepper joint2, float * jointAngles, int acceleration) {  
-  int stepsJ1 = angleToSteps(jointAngles[1]);
-  int stepsJ2 = angleToSteps(jointAngles[2]);
+  int stepsJ1 = angleToSteps(jointAngles[0]) * LARGE_RATIO;
+  int stepsJ2 = angleToSteps(jointAngles[1]) * LARGE_RATIO;
 
   joint1.setAcceleration(acceleration);
   joint2.setAcceleration(acceleration);
@@ -164,10 +166,11 @@ void setup() {
   //  Setting speed and acceleration parameters for each joint
   //----------------------------------------------------------------
   J1.setMaxSpeed(800.0);
-  J1.setAcceleration(400.0);
+  J1.setAcceleration(800.0);
 
   J2.setMaxSpeed(800.0);
-  J2.setAcceleration(400.0);
+  J2.setAcceleration(800.0);
+
 
   delay(500);
 
@@ -175,36 +178,20 @@ void setup() {
 
 void loop() {
 
-  float angles[] = {0, 360, 90, 0};
-  float zeroAngles[4] = {0, 0.45, 0.45, 0};
-  
-  float pos[] = {0.11496, 0.0, 0.09877};
+  float pos[] = {0.110, 0.0, 0.254};
   inverseKinematics(0, pos, jointAngles);
-  moveJoints(J1, J2, jointAngles, 100);
-
-
-  // Microstep calibration at start of loop
- // dMotorsRun(zeroAngles, 800, 40);
-
-//  run3(800, 0, 800, 20);   // Start
-
- // run3(800, J1.speed(), 800, 20);
-
-//  run3(800, J1.speed(), 800, 20);
-
- // run3(800, J1.speed(), 0, 20);
-
-
-  
- // dMotorsRun(angles, 800, 100);
- // dMotorsRun(angles, 800, 100);
- // dMotorsRun(angles, 800, 0);
+  Serial.println(jointAngles[1]);
+  moveJoints(J1, J2, jointAngles, 1600);
 
 
 
 
 
-  delay(1000);
+
+
+
+
+  delay(10000);
 
 
 }
