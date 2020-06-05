@@ -6,6 +6,7 @@
 #define MAX_SPS 800
 
 #define LARGE_RATIO 28.44
+#define SMALL_RATIO 18.78
 
 #define INTERFACE_TYPE 1
 
@@ -17,6 +18,10 @@
 #define J2_STEP 9
 #define J2_ENABLE 10
 
+#define J3_DIR  11
+#define J3_STEP 12
+#define J3_ENABLE 13
+
 const float stepsPerRotation = BASE_STEPS / MICRO_STEPS;
 const float degreesPerStep = 360 / stepsPerRotation;
 
@@ -24,30 +29,36 @@ float jointAngles[4];
 
 AccelStepper J1 = AccelStepper(INTERFACE_TYPE, J1_STEP, J1_DIR);
 AccelStepper J2 = AccelStepper(INTERFACE_TYPE, J2_STEP, J2_DIR);
-
+AccelStepper J3 = AccelStepper(INTERFACE_TYPE, J3_STEP, J3_DIR);
 
 int angleToSteps(float angle) {
   return (int) (angle / degreesPerStep);
 }
 
 
-void moveJoints(AccelStepper joint1, AccelStepper joint2, float * jointAngles, int acceleration) {  
+void moveJoints(AccelStepper joint1, AccelStepper joint2, AccelStepper joint3, float * jointAngles, int acceleration) {  
   int stepsJ1 = angleToSteps(jointAngles[0]) * LARGE_RATIO;
   int stepsJ2 = angleToSteps(jointAngles[1]) * LARGE_RATIO;
+  int stepsJ3 = angleToSteps(360 - jointAngles[2]) * SMALL_RATIO;
+
 
   joint1.setAcceleration(acceleration);
   joint2.setAcceleration(acceleration);
+  joint3.setAcceleration(acceleration);
 
   
   joint1.move(stepsJ1);
   joint2.move(stepsJ2);  
+  joint3.move(stepsJ3);  
 
    while ( 
     (joint1.distanceToGo() != 0) || 
-    (joint2.distanceToGo() != 0) 
+    (joint2.distanceToGo() != 0) ||
+    (joint3.distanceToGo() != 0) 
     ) {
       joint1.run();
       joint2.run();
+      joint3.run();
   }
 } 
 
@@ -171,6 +182,8 @@ void setup() {
   J2.setMaxSpeed(800.0);
   J2.setAcceleration(800.0);
 
+  J3.setMaxSpeed(800.0);
+  J3.setAcceleration(800.0);
 
   delay(500);
 
@@ -181,7 +194,7 @@ void loop() {
   float pos[] = {0.110, 0.0, 0.254};
   inverseKinematics(0, pos, jointAngles);
   Serial.println(jointAngles[1]);
-  moveJoints(J1, J2, jointAngles, 1600);
+  moveJoints(J1, J2, J3, jointAngles, 1600);
 
 
 
