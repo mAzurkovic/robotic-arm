@@ -40,7 +40,7 @@
 			// Modify passed array to include each joint angle
 	    jointAngles[0] = DEG_PER_RAD * theta_1;
 	    jointAngles[1] = DEG_PER_RAD * theta_2;
-	    jointAngles[2] = DEG_PER_RAD * theta_3;
+	    jointAngles[2] = 360 - DEG_PER_RAD * theta_3;
 	    jointAngles[3] = DEG_PER_RAD * theta_4;
 	}
 

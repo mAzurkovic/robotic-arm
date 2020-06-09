@@ -6,7 +6,7 @@ clear all;
 % Inputs %
 %%%%%%%%%%
 
-p = [ 0.110 0.0 0.254 ]; % x0, y0, z0 desired positions
+p = [ 0.0 0.0 0.0 ]; % x0, y0, z0 desired positions
 phi = 0; % Desired end-effector joinmt angle follower
 
 % Constants

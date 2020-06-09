@@ -37,9 +37,9 @@ int angleToSteps(float angle) {
 
 
 void moveJoints(AccelStepper joint1, AccelStepper joint2, AccelStepper joint3, float * jointAngles, int acceleration) {  
-  int stepsJ1 = angleToSteps(jointAngles[0]) * LARGE_RATIO;
-  int stepsJ2 = angleToSteps(jointAngles[1]) * LARGE_RATIO;
-  int stepsJ3 = angleToSteps(360 - jointAngles[2]) * SMALL_RATIO;
+  int stepsJ1 = -1 * angleToSteps(jointAngles[0]) * LARGE_RATIO;
+  int stepsJ2 = -1 * angleToSteps(jointAngles[1]) * LARGE_RATIO;
+  int stepsJ3 = -1 * angleToSteps(360 - jointAngles[2]) * SMALL_RATIO;
 
 
   joint1.setAcceleration(acceleration);
@@ -191,7 +191,7 @@ void setup() {
 
 void loop() {
 
-  float pos[] = {0.110, 0.0, 0.254};
+  float pos[] = {0.250, 0.0, 0.140};
   inverseKinematics(0, pos, jointAngles);
   Serial.println(jointAngles[1]);
   moveJoints(J1, J2, J3, jointAngles, 1600);

@@ -87,8 +87,8 @@ void loop() {
   
   // put your main code here, to run repeatedly:
 
-  float jointAngles[] = {45.0, 60.0, 90.0, 0}; 
-  float jointAngles2[] = {-45.0, -60.0, -90, 0}; 
+  float jointAngles[] = {45.0, 45, 30, 0}; 
+  float jointAngles2[] = {-45.0, -45, -30, 0}; 
 
   moveJoints(J1, J2, J3, jointAngles, 1600);
   moveJoints(J1, J2, J3, jointAngles2, 1600);
