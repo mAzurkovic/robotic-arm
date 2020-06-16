@@ -16,6 +16,9 @@
 #define J3_DIR  11
 #define J3_STEP 12
 
+#define J4_DIR  6
+#define J4_STEP 7
+
 String inString;
 
 float jointAngles[4];
@@ -26,6 +29,7 @@ float pos[3];
 AccelStepper J1 = AccelStepper(INTERFACE_TYPE, J1_STEP, J1_DIR);
 AccelStepper J2 = AccelStepper(INTERFACE_TYPE, J2_STEP, J2_DIR);
 AccelStepper J3 = AccelStepper(INTERFACE_TYPE, J3_STEP, J3_DIR);
+AccelStepper J4 = AccelStepper(INTERFACE_TYPE, J4_STEP, J4_DIR);
 
 void goToCoord(float x, float y, float z) {
   pos[0] = x;
@@ -38,8 +42,14 @@ void goToCoord(float x, float y, float z) {
   sendAngles[1] = jointAngles[1] - prevAngles[1];
   sendAngles[2] = jointAngles[2] - prevAngles[2];
   sendAngles[3] = jointAngles[3] - prevAngles[3];
+
+
+  Serial.println(sendAngles[0]); 
+  Serial.println(sendAngles[1]);
+  Serial.println(sendAngles[2]);
+  Serial.println(sendAngles[3]);
     
-  interpolatedRun(J1, J2, J3, sendAngles, 1600);  
+  interpolatedRun(J1, J2, J3, J4, sendAngles, 800);  
 
   prevAngles[0] = jointAngles[0];
   prevAngles[1] = jointAngles[1];
@@ -62,6 +72,9 @@ void setup() {
 
   J3.setMaxSpeed(800.0);
   J3.setAcceleration(800.0);
+
+  J4.setMaxSpeed(800.0);
+  J4.setAcceleration(800.0);
   
   Serial.println("===========");
   Serial.println("Move Joints");
@@ -72,7 +85,6 @@ void setup() {
   prevAngles[1] = 0;
   prevAngles[2] = 0;
   prevAngles[3] = 0;
-
 
   delay(500);
 }
@@ -91,34 +103,22 @@ void loop() {
       moveJoint(J2, angle, 1600, LARGE_RATIO);
     } else if (command.equals("J3")) {
       Serial.println("Moving JOINT 3: " + String(angle) + " degrees"); 
-      moveJoint(J3, angle, 1600, SMALL_RATIO);
+      moveJoint(J3, angle, 1600, LARGE_RATIO);
+    } else if (command.equals("J4")) {
+      Serial.println("Moving JOINT 4: " + String(angle) + " degrees"); 
+      moveJoint(J4, angle, 1600, SMALL_RATIO);
     } else if (command.equals("MV")) {
       float xpos = (inString.substring(3,7)).toFloat();
       float ypos = (inString.substring(8,12)).toFloat();
       float zpos = (inString.substring(13)).toFloat();
 
-      pos[0] = xpos;
-      pos[1] = ypos;
-      pos[2] = zpos;
-      
-      inverseKinematics(0, pos, jointAngles);
-      
-      sendAngles[0] = jointAngles[0] - prevAngles[0];
-      sendAngles[1] = jointAngles[1] - prevAngles[1];
-      sendAngles[2] = jointAngles[2] - prevAngles[2];
-      sendAngles[3] = jointAngles[3] - prevAngles[3];
+      goToCoord(xpos, ypos, zpos);
 
-      interpolatedRun(J1, J2, J3, sendAngles, 1600);  
-
-      prevAngles[0] = jointAngles[0];
-      prevAngles[1] = jointAngles[1];
-      prevAngles[2] = jointAngles[2];
-      prevAngles[3] = jointAngles[3];
     } else if (command.equals("GO")) {
       goToCoord(0.20, 0, 0.20);
-      goToCoord(0.10, 0.05, 0.15);
-      goToCoord(0.20, 0, 0.30);
-      goToCoord(0.10, 0.1, 0.20);
+      goToCoord(0.15, 0.05, 0.15);
+      goToCoord(0.20, -0.05, 0.25);
+      goToCoord(0.30, 0.1, 0.15);
     }
 
   }

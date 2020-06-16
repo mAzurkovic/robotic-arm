@@ -6,7 +6,7 @@
 #define BASE_STEPS 200
 #define MICRO_STEPS 0.25
 #define MAX_SPS 800
-#define JOINT_SPACE 3
+#define JOINT_SPACE 4
 
 #define LARGE_RATIO 28.44
 #define SMALL_RATIO 18.78
@@ -31,7 +31,6 @@ int findMaximum(float a[], int n) {
        maximum = a[c];
     }
   }
- 
   return index;
 }
 
@@ -60,46 +59,54 @@ void moveJoints(AccelStepper joint1, AccelStepper joint2, AccelStepper joint3, f
   }
 } 
 
-void interpolatedRun(AccelStepper joint1, AccelStepper joint2, AccelStepper joint3, float * jointAngles, int acceleration) {  
-  float jointTimes[3];
+void interpolatedRun(AccelStepper joint1, AccelStepper joint2, AccelStepper joint3, AccelStepper joint4, float * jointAngles, int acceleration) {  
+  float jointTimes[JOINT_SPACE];
   int maxIndex;
   
   float stepsJ1 = -1 * angleToSteps(jointAngles[0]) * LARGE_RATIO;
   float stepsJ2 = -1 * angleToSteps(jointAngles[1]) * LARGE_RATIO;
-  float stepsJ3 = 0 ? (jointAngles[2] == 0) : (-1 * angleToSteps(jointAngles[2]) * SMALL_RATIO);
+  float stepsJ3 = 0 ? (jointAngles[2] == 0) : (-1 * angleToSteps(jointAngles[2]) * LARGE_RATIO);
+  float stepsJ4 = 0 ? (jointAngles[3] == 0) : (-1 * angleToSteps(jointAngles[3]) * SMALL_RATIO);
 
   jointTimes[0] = abs(stepsJ1 / MAX_SPS);
   jointTimes[1] = abs(stepsJ2 / MAX_SPS);
   jointTimes[2] = abs(stepsJ3 / MAX_SPS);
+  jointTimes[3] = abs(stepsJ4 / MAX_SPS);
 
   joint1.setAcceleration(acceleration);
   joint2.setAcceleration(acceleration);
   joint3.setAcceleration(acceleration);
+  joint4.setAcceleration(acceleration);
 
   maxIndex = findMaximum(jointTimes, JOINT_SPACE); 
 
   Serial.println((stepsJ1 / jointTimes[maxIndex])); 
   Serial.println((stepsJ2 / jointTimes[maxIndex]));
   Serial.println((stepsJ3 / jointTimes[maxIndex]));
+  Serial.println((stepsJ4 / jointTimes[maxIndex]));
 
 
   joint1.setMaxSpeed( (stepsJ1 / jointTimes[maxIndex]) );
   joint2.setMaxSpeed( (stepsJ2 / jointTimes[maxIndex]) );
   joint3.setMaxSpeed( (stepsJ3 / jointTimes[maxIndex]) );
+  joint4.setMaxSpeed( (stepsJ4 / jointTimes[maxIndex]) );
 
 
   joint1.move(stepsJ1);
   joint2.move(stepsJ2);  
   joint3.move(stepsJ3);  
+  joint4.move(stepsJ4);  
 
    while ( 
     (joint1.distanceToGo() != 0) || 
     (joint2.distanceToGo() != 0) ||
-    (joint3.distanceToGo() != 0) 
+    (joint3.distanceToGo() != 0) ||
+    (joint4.distanceToGo() != 0) 
     ) {
       joint1.run();
       joint2.run();
       joint3.run();
+      joint4.run();
   }
 } 
 

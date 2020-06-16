@@ -6,11 +6,11 @@
 
 #define DEG_PER_RAD 57.29577951
 
-#define L0 0.01
-#define L1 0.045
-#define L2 0.15
-#define L3 0.15
-#define L4 0.03
+#define L0 0.095
+#define L1 0.06
+#define L2 0.181
+#define L3 0.175
+#define L4 0.054
 
 	// Main inverse kinematics computation function.
 	// Returns joint angles and takes orientation (phi) and x, y, z coordinates
