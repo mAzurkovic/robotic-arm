@@ -31,23 +31,17 @@ AccelStepper J2 = AccelStepper(INTERFACE_TYPE, J2_STEP, J2_DIR);
 AccelStepper J3 = AccelStepper(INTERFACE_TYPE, J3_STEP, J3_DIR);
 AccelStepper J4 = AccelStepper(INTERFACE_TYPE, J4_STEP, J4_DIR);
 
-void goToCoord(float x, float y, float z) {
+void goToCoord(float x, float y, float z, float pitch) {
   pos[0] = x;
   pos[1] = y;
   pos[2] = z;
      
-  inverseKinematics(0, pos, jointAngles);
+  inverseKinematics(pitch, pos, jointAngles);
      
   sendAngles[0] = jointAngles[0] - prevAngles[0];
   sendAngles[1] = jointAngles[1] - prevAngles[1];
   sendAngles[2] = jointAngles[2] - prevAngles[2];
   sendAngles[3] = jointAngles[3] - prevAngles[3];
-
-
-  Serial.println(sendAngles[0]); 
-  Serial.println(sendAngles[1]);
-  Serial.println(sendAngles[2]);
-  Serial.println(sendAngles[3]);
     
   interpolatedRun(J1, J2, J3, J4, sendAngles, 800);  
 
@@ -112,13 +106,17 @@ void loop() {
       float ypos = (inString.substring(8,12)).toFloat();
       float zpos = (inString.substring(13)).toFloat();
 
-      goToCoord(xpos, ypos, zpos);
+      goToCoord(xpos, ypos, zpos, 0);
 
     } else if (command.equals("GO")) {
-      goToCoord(0.20, 0, 0.20);
-      goToCoord(0.15, 0.05, 0.15);
-      goToCoord(0.20, -0.05, 0.25);
-      goToCoord(0.30, 0.1, 0.15);
+      goToCoord(0.20, 0, 0.20, 0);
+      goToCoord(0.15, 0.05, 0.15, 0);
+      goToCoord(0.20, -0.05, 0.25, 0);
+      goToCoord(0.30, 0.1, 0.15, 0);
+      
+    } else if (command.equals("OK")) {
+      goToCoord(0.20, 0, 0.20, 0);
+      goToCoord(0.20, 0, 0.20, 45);
     }
 
   }

@@ -65,8 +65,8 @@ void interpolatedRun(AccelStepper joint1, AccelStepper joint2, AccelStepper join
   
   float stepsJ1 = -1 * angleToSteps(jointAngles[0]) * LARGE_RATIO;
   float stepsJ2 = -1 * angleToSteps(jointAngles[1]) * LARGE_RATIO;
-  float stepsJ3 = 0 ? (jointAngles[2] == 0) : (-1 * angleToSteps(jointAngles[2]) * LARGE_RATIO);
-  float stepsJ4 = 0 ? (jointAngles[3] == 0) : (-1 * angleToSteps(jointAngles[3]) * SMALL_RATIO);
+  float stepsJ3 = (-1 * angleToSteps(jointAngles[2]) * LARGE_RATIO);
+  float stepsJ4 = (-1 * angleToSteps(jointAngles[3]) * SMALL_RATIO);
 
   jointTimes[0] = abs(stepsJ1 / MAX_SPS);
   jointTimes[1] = abs(stepsJ2 / MAX_SPS);
@@ -79,6 +79,9 @@ void interpolatedRun(AccelStepper joint1, AccelStepper joint2, AccelStepper join
   joint4.setAcceleration(acceleration);
 
   maxIndex = findMaximum(jointTimes, JOINT_SPACE); 
+
+  Serial.println(jointTimes[maxIndex]); 
+  Serial.println(maxIndex); 
 
   Serial.println((stepsJ1 / jointTimes[maxIndex])); 
   Serial.println((stepsJ2 / jointTimes[maxIndex]));

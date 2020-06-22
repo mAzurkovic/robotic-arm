@@ -14,8 +14,8 @@
 
 	// Main inverse kinematics computation function.
 	// Returns joint angles and takes orientation (phi) and x, y, z coordinates
-	void inverseKinematics(float phi, float pos[], float jointAngles[4]) {
-
+	void inverseKinematics(float pitch, float pos[], float jointAngles[4]) {
+      float phi = pitch / DEG_PER_RAD;
 	    // Intermediate desired location at joint 4
 	    const float pos_prime[] = { (pos[0] - L4 * cos(phi)),
 	                        pos[1],
